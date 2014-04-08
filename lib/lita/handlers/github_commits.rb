@@ -45,7 +45,12 @@ module Lita
 
       def format_message(payload)
         if payload['commits'].size > 0
-          "[GitHub] Got #{payload['commits'].size} new commits from #{payload['commits'].first['author']['name']} on #{payload['repository']['owner']['name']}/#{payload['repository']['name']}"
+          commit_urls = payload['commits'].map { |commit| "[GitHub] #{commit['url']}" }.join "\n"
+<<-MSG
+[GitHub] Got #{payload['commits'].size} new commits from #{payload['commits'].first['author']['name']} on #{payload['repository']['owner']['name']}/#{payload['repository']['name']}
+[GitHub] #{payload['repository']['url']}
+#{commit_urls}
+MSG
         elsif payload['created']
           "[GitHub] #{payload['pusher']['name']} created: #{payload['ref']}: #{payload['base_ref']}"
         elsif payload['deleted']
