@@ -39,7 +39,9 @@ module Lita
 
         rooms.each do |room|
           target = Source.new(room: room)
-          robot.send_message(target, message)
+          message.split("\n").each do |msg|
+            robot.send_message(target, msg)
+          end
         end
       end
 
@@ -48,7 +50,6 @@ module Lita
           commit_urls = payload['commits'].map { |commit| "[GitHub] #{commit['url']}" }.join "\n"
 <<-MSG
 [GitHub] Got #{payload['commits'].size} new commits from #{payload['commits'].first['author']['name']} on #{payload['repository']['owner']['name']}/#{payload['repository']['name']}
-[GitHub] #{payload['repository']['url']}
 #{commit_urls}
 MSG
         elsif payload['created']
